@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Button, Linking } from 'react-native';
+import { Text, View, StyleSheet, Button, Linking, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [dato, setDato] = useState('');
+  // const [dato, setDato] = useState('');
 
   const handleLinking = (dato) => {
       Linking.openURL(dato);
@@ -20,6 +20,14 @@ export default function App() {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
+    Alert.alert(
+      ` Código tipo: ${type} leido`,
+      `¿Desea abrir: ${data}?`,
+      [
+        {text: 'Cancelar', onPress: () => setScanned(false), style: 'cancel'},
+        {text: 'Abrir', onPress: () => handleLinking(data)},
+      ]
+    );
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
     // setDato(data);
     // console.log('dato',dato);
@@ -39,8 +47,8 @@ export default function App() {
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
         style={StyleSheet.absoluteFillObject}
       />
-      {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
-      {scanned && <Button title={'Linking'} onPress={() => handleLinking(dato)} />}
+
+      
 
     </View>
   );
@@ -51,5 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
+    backgroundColor: 'black',
   },
+  
 });
